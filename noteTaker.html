@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Note Taker- sachin_kumar</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+
+</head>
+<body>
+
+<header class="bg-dark d-flex flex-sm-column flex-md-row justify-content-sm-center align-items-center justify-content-md-between text-white container-fluid ">
+<h2 class="fs-2 fw-bold ps-2">  <span class="fs-1 text-info">S</span>achin <span class="fs-1 text-info">K</span>umar</h2>
+<div class="w-50 my-2 pe-2">
+<input type="search" id="searchTxt" class=" form-control " placeholder="search your notes...">
+</div>
+</header>
+
+<div class="container my-2">
+
+<div class="card ">
+<div class="card-header">
+<input type="text" placeholder="Title.." id="addTitle" class="form-control">
+</div>
+<div class="card-body">
+<textarea class="form-control my-3" id="addTxt" rows="7" placeholder="enter your notes"></textarea>
+<button class="btn btn-dark text-white fw-bold" id="addBtn"> Add Note </button>
+</div>
+
+
+</div>
+
+<h1 class="mt-4"> Your Notes </h1>
+<hr/>
+
+<div class="row" id="notes" ></div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<script> 
+showNotes()
+console.log("note taker app")
+
+// If user add notes than add it to local storage
+let addBtn = document.getElementById("addBtn")
+
+addBtn.addEventListener("click", function(e){
+let addTxt = document.getElementById("addTxt")
+let addTitle = document.getElementById("addTitle")
+
+let notes = localStorage.getItem("notes")
+
+if(notes == null){
+notesObj = [];
+}
+else{
+notesObj = JSON.parse(notes);
+}
+
+let details = addTxt.value
+let titles = addTitle.value
+
+let noter = {details , titles}
+
+notesObj.unshift(noter)
+localStorage.setItem("notes", JSON.stringify(notesObj));
+addTxt.value="";
+
+console.log(addTxt.value)
+
+console.log(notes)
+
+showNotes()
+
+})
+
+
+
+
+function showNotes(){
+ 
+let notes = localStorage.getItem("notes")
+
+if(notes == null){
+notesObj = [];
+}
+else{
+notesObj = JSON.parse(notes);
+}
+
+let html = ""
+
+notesObj.forEach(function(element, index){
+html += `
+<div class="noteCard col-6 col-md-4 my-3">
+<div class="card ">
+<div class="card-header bg-dark text-white "> <h5 class="card-title fs-5 " id="title">  ${element.titles} </h5> </div>
+<div class="card-body">
+<p class="card-text"> ${element.details}</p>
+<button id="${index}"  onclick="deleteNote(this.id)" class="btn btn-danger fw-bold text-white" > Delete id</button>
+</div>
+</div>
+
+
+</div>
+
+
+
+`
+
+})
+
+let noteElm = document.getElementById("notes");
+
+if(notesObj.length != 0){
+noteElm.innerHTML = html;
+}else{
+noteElm.innerHTML = "nothing to show here!"
+}
+
+}
+
+
+
+// function to delete notes
+
+function deleteNote(index){
+// console.log("thisis deleting", index)
+let notes = localStorage.getItem("notes")
+
+if(notes == null){
+notesObj = []
+}else{
+notesObj = JSON.parse(notes)
+}
+notesObj.splice(index,1)
+
+localStorage.setItem("notes", JSON.stringify(notesObj));
+
+showNotes();
+
+
+
+}
+
+
+
+// search notes function
+
+let search = document.getElementById("searchTxt")
+
+search.addEventListener("input", function(){
+let inputVal = search.value.toLowerCase()
+
+// console.log("fire", inputVal)
+
+
+
+let noteCards = document.getElementsByClassName('noteCard')
+Array.from(noteCards).forEach(function(element){
+let Title = element.getElementsByTagName("h5")[0].innerText.toLowerCase()
+let cardTxt = element.getElementsByTagName("p")[0].innerText.toLowerCase()
+if(cardTxt.includes(inputVal) || Title.includes(inputVal) ){
+element.style.display = "block"
+}else{
+element.style.display = "none"
+}
+
+})
+
+
+ })
+
+
+
+
+
+
+
+ 
+
+
+
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>   
+ 
+</body>
+</html>
